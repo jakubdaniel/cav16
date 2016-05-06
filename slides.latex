@@ -1,0 +1,216 @@
+\documentclass{beamer}
+
+\usepackage{tikz}
+
+\def\mark#1{$^\text{#1}$}
+\def\marktext#1#2{\mark{#1}#2}
+
+\begin{document}
+
+\begin{frame}{Infinite-state liveness-to-safety via implicit abstraction and well-founded relations}
+Jakub Daniel\mark{1}\mark{2},
+Alessandro Cimatti\mark{1},
+Alberto Griggio\mark{1},
+Stefano Tonetta\mark{1},
+Sergio Mover\mark{1}
+\vfill
+\marktext{1}{FBK} \marktext{2}{CUNI}
+\end{frame}
+
+
+
+
+\begin{frame}{Message}
+Very high-level mission goal (in terms that will be concretized later)
+\end{frame}
+
+
+
+
+\begin{frame}{Background}
+\end{frame}
+
+
+
+
+\begin{frame}{Model-checking LTL properties}
+Ranking, Automata, but also SAT-based
+
+convert arbitrary LTL to FGnegf
+\end{frame}
+
+
+
+
+\begin{frame}{Model-checking LTL properties of symbolic finite-state TS}
+Generic symbolic transition systems
+
+$$
+\def\descsep{\rule{0pt}{1.4em}}
+\langle \underset{\text{\color{green!40!black}\descsep variables}}{X}, \underset{\text{\color{blue!50!black}\descsep initial}}{I}, \underset{\text{\color{orange!50!black}\descsep transition}}{T} \rangle
+$$
+
+Example
+
+$$
+\ldots
+$$
+
+\vfill
+
+\hrule
+
+\begin{center}
+Let's focus on SAT-based techniques
+\end{center}
+\end{frame}
+
+
+
+
+\begin{frame}{L2S}
+$$
+\def\descsep{\rule{0pt}{1.4em}}
+\langle \underset{\text{\color{green!40!black}\descsep variables}}{X}, \underset{\text{\color{blue!50!black}\descsep initial}}{I}, \underset{\text{\color{orange!50!black}\descsep transition}}{T} \rangle
+$$
+enhanced to
+$$
+    \langle {\color{green!40!black}X_{L2S}}, {\color{blue!50!black}I_{L2S}}, {\color{orange!50!black}T_{L2S}} \rangle
+$$
+where
+
+\begin{minipage}{8cm}
+\begin{itemize}
+\item initially non-det choice of values $\overline{X}$ of ${\color{green!40!black}X}$
+\end{itemize}
+\end{minipage}
+(${\color{blue!50!black}I_{L2S}}$)
+
+\vskip1em
+
+\begin{minipage}{8cm}
+\begin{itemize}
+\item remember when ${\color{green!40!black}X} = \overline{X}$ reached $1^{st}$ time
+\item wait for $f$ to occur
+\item close loop when ${\color{green!40!black}X} = \overline{X}$ reached $2^{nd}$ time
+\end{itemize}
+\end{minipage}
+(${\color{orange!50!black}T_{L2S}}$)
+
+\begin{center}
+loop $\models \mathbf{GF}f$
+\end{center}
+\end{frame}
+
+
+
+
+\begin{frame}{L2S}
+\begin{center}
+\begin{tikzpicture}[->, >=stealth, every node/.style={circle, draw, minimum size=0.75cm}]
+\foreach \x in {1, 2, 4, 6}
+    \node<\x-> (P-\x) at (1.5 * \x,0) {};
+\foreach \x in {3, 7}
+    \node<\x->[fill=green!40!black,label={above:${\color{green!40!black}X} = \overline{X}$}] (P-\x) at (1.5 * \x,0) {};
+\foreach \x in {5}
+    \node<\x-> (P-\x) at (1.5 * \x,0) {$f$};
+\foreach \from/\to in {1/2, 2/3, 3/4, 4/5, 5/6, 6/7}
+    \draw<\to-> (P-\from) -- (P-\to);
+\path<8> (P-3) edge[<->,bend right=60] (P-7);
+\clip (1.5, -3) rectangle (12, 2);
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+
+
+
+\begin{frame}{k-liveness}
+bounding number of times a fairness constraint can become true
+\end{frame}
+\begin{frame}{Infinite-state case}
+$$
+\def\descsep{\rule{0pt}{1.4em}}
+\langle \underset{\text{\color{green!40!black}\descsep variables}}{X}, \underset{\text{\color{blue!50!black}\descsep initial}}{I}, \underset{\text{\color{orange!50!black}\descsep transition}}{T} \rangle
+$$
+
+Example
+
+$$
+\langle {\color{green!40!black}\left\{ x \right\}}, {\color{blue!50!black}\big[x = 0\big]}, {\color{orange!50!black}\big[x < 10 \land x' = x + 1\big] \lor \big[x' = x\big]} \rangle
+$$
+
+Property 1
+
+$$
+    \mathbf{G} (x \le 10)
+$$
+
+Property 2
+
+$$
+    \mathbf{F} (x = 10)
+$$
+\end{frame}
+
+
+
+
+\begin{frame}
+\begin{center}
+\begin{tabular}{ll}
+L2S        & unsound \\
+k-liveness & sound but not complete
+\end{tabular}
+\end{center}
+\vskip1em
+but L2S lifted to infinite-state via Predicate Abstraction (SMT)
+\end{frame}
+
+
+
+
+\begin{frame}{L2S with Predicate Abstraction}
+limitation: finite-number of predicates not enough to prove safety in some cases
+\end{frame}
+
+
+
+
+\begin{frame}{Contribution}
+\end{frame}
+
+
+
+
+\begin{frame}{L2S with Implicit Abstraction}
+Avoid explosion
+Top-level algorithm:
+  we check a sequence of (system, prop)
+  At anypoint safe means FGnegf holds, finite cex analyzed if infinite cex exists (then FGnegf doesnt hold)
+  The problem to show infeasibility of a loop (abstract vs concrete, concrete path need not be looping, we only check concrete loop by BMC or infeasibility due to unrollings)
+\end{frame}
+
+
+
+
+\begin{frame}{L2S with Implicit Abstraction and Well-founded Relations}
+Well-founded relations (disjunctively, to show finitness of possible loop unrollings)
+Describe from the point of view of Theorem 2?
+Counterexamples in addition analyzed based on farkas lemma (in our implementation)
+\end{frame}
+
+
+
+
+\begin{frame}{Evaluation}
+Implemented via IC3, evaluated, compared with HSF, Ultimate-LTL, T2
+\end{frame}
+
+
+
+
+\begin{frame}{Conclusion \& Future}
+\end{frame}
+
+\end{document}
