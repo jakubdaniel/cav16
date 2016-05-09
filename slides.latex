@@ -12,16 +12,9 @@ Jakub Daniel\mark{1}\mark{2},
 Alessandro Cimatti\mark{1},
 Alberto Griggio\mark{1},
 Stefano Tonetta\mark{1},
-Sergio Mover\mark{1}
+Sergio Mover\mark{3}
 \vfill
-\marktext{1}{FBK} \marktext{2}{CUNI}
-\end{frame}
-
-
-
-
-\begin{frame}{Message}
-Very high-level mission goal (in terms that will be concretized later)
+\marktext{1}{FBK} \marktext{2}{CUNI} \marktext{3}{BOULDER}
 \end{frame}
 
 
@@ -36,7 +29,7 @@ Very high-level mission goal (in terms that will be concretized later)
 \begin{frame}{Model-checking LTL properties}
 Ranking, Automata, but also SAT-based
 
-convert arbitrary LTL to FGnegf
+convert arbitrary LTL to $\mathbf{FG}\neg f$
 \end{frame}
 
 
@@ -98,7 +91,7 @@ where
 (${\color{orange!50!black}T_{L2S}}$)
 
 \begin{center}
-loop $\models \mathbf{GF}f$
+there is loop iff $\mathbf{GF}f$ hence safety property $\neg loop$ proves $\mathbf{FG} \neg f$
 \end{center}
 \end{frame}
 
@@ -116,7 +109,7 @@ loop $\models \mathbf{GF}f$
     \node<\x-> (P-\x) at (1.5 * \x,0) {$f$};
 \foreach \from/\to in {1/2, 2/3, 3/4, 4/5, 5/6, 6/7}
     \draw<\to-> (P-\from) -- (P-\to);
-\path<8> (P-3) edge[<->,bend right=60] (P-7);
+\path<8-> (P-3) edge[<->,bend right=60] node[draw=none,label={below:$\mathbf{GF}f$}] {} (P-7);
 \clip (1.5, -3) rectangle (12, 2);
 \end{tikzpicture}
 \end{center}
@@ -126,8 +119,22 @@ loop $\models \mathbf{GF}f$
 
 
 \begin{frame}{k-liveness}
-bounding number of times a fairness constraint can become true
+$f$ is visited at most $k$ times, then $\mathbf{FG}\neg f$
+
+sequence of checks $k = 1, 2, \ldots$
+
+\begin{itemize}
+\item initialize $counter$ to $0$
+\item increase $counter$ whenever $f$ becomes satisfied
+\item keep $counter$ unchanged when $\neg f$ is satisfied
+\item safety property $counter < k$
+\item for large enough $k$, repeated state closes loop containing $f$
+\end{itemize}
 \end{frame}
+
+
+
+
 \begin{frame}{Infinite-state case}
 $$
 \def\descsep{\rule{0pt}{1.4em}}
@@ -137,41 +144,54 @@ $$
 Example
 
 $$
-\langle {\color{green!40!black}\left\{ x \right\}}, {\color{blue!50!black}\big[x = 0\big]}, {\color{orange!50!black}\big[x < 10 \land x' = x + 1\big] \lor \big[x' = x\big]} \rangle
+\langle {\color{green!40!black}\left\{ x \right\}}, {\color{blue!50!black}\big[x = 0\big]}, {\color{orange!50!black} \big[x' = x\big] \lor \big[x < 10 \land x' = x + 1\big]} \rangle
 $$
 
 Property 1
 
 $$
-    \mathbf{G} (x \le 10)
+    \models \mathbf{G} (x \le 10)
 $$
 
 Property 2
 
 $$
-    \mathbf{F} (x = 10)
+    \not\models \mathbf{F} (x = 10)
 $$
 \end{frame}
 
 
 
 
-\begin{frame}
-\begin{center}
-\begin{tabular}{ll}
-L2S        & unsound \\
-k-liveness & sound but not complete
-\end{tabular}
-\end{center}
-\vskip1em
-but L2S lifted to infinite-state via Predicate Abstraction (SMT)
+\begin{frame}{Infinite-state case}
+Direct extension to infinite-state
+\begin{itemize}
+\item L2S unsound
+\begin{itemize}
+\item theory variables $X$ over infinite domain
+\item $\mathbf{GF}f$ path may not be looping
+\end{itemize}
+\item k-liveness sound but not complete
+\end{itemize}
 \end{frame}
 
 
 
 
 \begin{frame}{L2S with Predicate Abstraction}
-limitation: finite-number of predicates not enough to prove safety in some cases
+\begin{itemize}
+\item sound again by use of Predicate Abstraction
+\begin{itemize}
+\item fixed set of abstraction predicates $P$
+\item initially guess valuation of predicates ${\color{green!40!black}\overline{P}}$
+\item search for repeated abstract state (where $P(X) = {\color{green!40!black}\overline{P}}$)
+\end{itemize}
+\item CEGAR loop to battle spurious counterexamples
+\begin{itemize}
+\item counterexamples may be spurious despite all finite prefixes being feasible
+\end{itemize}
+\item finite number of predicates not enough to prove safety
+\end{itemize}
 \end{frame}
 
 
@@ -184,27 +204,39 @@ limitation: finite-number of predicates not enough to prove safety in some cases
 
 
 \begin{frame}{L2S with Implicit Abstraction}
-Avoid explosion
-Top-level algorithm:
-  we check a sequence of (system, prop)
-  At anypoint safe means FGnegf holds, finite cex analyzed if infinite cex exists (then FGnegf doesnt hold)
-  The problem to show infeasibility of a loop (abstract vs concrete, concrete path need not be looping, we only check concrete loop by BMC or infeasibility due to unrollings)
+\begin{itemize}
+\item implicit abstraction (avoid explosion)
+\item check sequence of finer and finer systems
+\item at anypoint safe means $\mathbf{FG}\neg f$ holds
+\item finite counterexample analyzed
+\begin{itemize}
+\item concrete loop by BMC
+\item but concrete counterexample need not be looping
+\item infeasible due to unrollings (may diverge / timeout)
+\end{itemize}
+\end{itemize}
 \end{frame}
 
 
 
 
 \begin{frame}{L2S with Implicit Abstraction and Well-founded Relations}
-Well-founded relations (disjunctively, to show finitness of possible loop unrollings)
-Describe from the point of view of Theorem 2?
-Counterexamples in addition analyzed based on farkas lemma (in our implementation)
+\begin{itemize}
+\item Well-founded relations (disjunctively, to show finitness of possible loop unrollings)
+\item Describe from the point of view of Theorem 2?
+\item Counterexamples in addition analyzed based on farkas lemma (in our implementation)
+\end{itemize}
 \end{frame}
 
 
 
 
 \begin{frame}{Evaluation}
-Implemented via IC3, evaluated, compared with HSF, Ultimate-LTL, T2
+\begin{itemize}
+\item implemented via IC3
+\item compared with state-of-the-art tools (HSF, Ultimate-LTL, T2)
+\item \ldots
+\end{itemize}
 \end{frame}
 
 
