@@ -27,9 +27,12 @@ Sergio Mover\mark{3}
 
 
 \begin{frame}{Model-checking LTL properties}
-Ranking, Automata, but also SAT-based
-
-convert arbitrary LTL to $\mathbf{FG}\neg f$
+\begin{itemize}
+\item Ranking
+\item Automata-based
+\item but also SAT-based
+\item convert arbitrary LTL to $\mathbf{FG}\neg f$
+\end{itemize}
 \end{frame}
 
 
@@ -46,22 +49,33 @@ $$
 Example
 
 $$
-\ldots
+\langle \left\{ a, b, c \right\}, \big[ a \big], \big[ a \land \left(a' \lor b'\right) \big] \lor \big[ b \land c' \big] \lor \big[ c \land c' \big] \rangle
 $$
 
-\vfill
-
-\hrule
-
 \begin{center}
-Let's focus on SAT-based techniques
+\begin{tikzpicture}[->, >=stealth, every node/.style={circle, draw, minimum size=0.75cm}]
+\node (P-1) at (2, 0) {a};
+\node (P-2) at (4, 0) {b};
+\node (P-3) at (6, 0) {c};
+\draw (P-1) to (P-2);
+\draw (P-2) to (P-3);
+\draw (P-1)++(-1,0) to (P-1);
+\draw (P-1) to[loop] (P-1);
+\draw (P-3) to[loop] (P-3);
+\end{tikzpicture}
 \end{center}
 \end{frame}
 
 
 
 
-\begin{frame}{L2S}
+\begin{frame}{Let's focus on SAT-based techniques}
+\end{frame}
+
+
+
+
+\begin{frame}{Liveness-to-safety (L2S)}
 $$
 \def\descsep{\rule{0pt}{1.4em}}
 \langle \underset{\text{\color{green!40!black}\descsep variables}}{X}, \underset{\text{\color{blue!50!black}\descsep initial}}{I}, \underset{\text{\color{orange!50!black}\descsep transition}}{T} \rangle
@@ -98,7 +112,8 @@ there is loop iff $\mathbf{GF}f$ hence safety property $\neg loop$ proves $\math
 
 
 
-\begin{frame}{L2S}
+\begin{frame}{Liveness-to-safety (L2S)}
+\framesubtitle{Counterexample to $\mathbf{FG}\neg f$}
 \begin{center}
 \begin{tikzpicture}[->, >=stealth, every node/.style={circle, draw, minimum size=0.75cm}]
 \foreach \x in {1, 2, 4, 6}
@@ -127,8 +142,9 @@ sequence of checks $k = 1, 2, \ldots$
 \item initialize $counter$ to $0$
 \item increase $counter$ whenever $f$ becomes satisfied
 \item keep $counter$ unchanged when $\neg f$ is satisfied
-\item safety property $counter < k$
+\item safety property $counter \le k$
 \item for large enough $k$, repeated state closes loop containing $f$
+\item alternatively, BMC
 \end{itemize}
 \end{frame}
 
@@ -183,14 +199,13 @@ Direct extension to infinite-state
 \item sound again by use of Predicate Abstraction
 \begin{itemize}
 \item fixed set of abstraction predicates $P$
-\item initially guess valuation of predicates ${\color{green!40!black}\overline{P}}$
-\item search for repeated abstract state (where $P(X) = {\color{green!40!black}\overline{P}}$)
+\item initially guess valuation of predicates $\overline{P}$
+\item search for repeated abstract state (where $P({\color{green!40!black}X}) = \overline{P}$)
 \end{itemize}
-\item CEGAR loop to battle spurious counterexamples
-\begin{itemize}
-\item counterexamples may be spurious despite all finite prefixes being feasible
-\end{itemize}
+\item CEGAR
 \item finite number of predicates not enough to prove safety
+\item not only refinement loop may diverge
+\item non-lasso-shaped counterexamples
 \end{itemize}
 \end{frame}
 
@@ -207,7 +222,7 @@ Direct extension to infinite-state
 \begin{itemize}
 \item implicit abstraction (avoid explosion)
 \item check sequence of finer and finer systems
-\item at anypoint safe means $\mathbf{FG}\neg f$ holds
+\item at anypoint safe means $\mathbf{FG}\neg f$ holds in original
 \item finite counterexample analyzed
 \begin{itemize}
 \item concrete loop by BMC
@@ -221,28 +236,85 @@ Direct extension to infinite-state
 
 
 \begin{frame}{L2S with Implicit Abstraction and Well-founded Relations}
+\framesubtitle{Battling limitations of L2S with Implicit Abstraction}
 \begin{itemize}
-\item Well-founded relations (disjunctively, to show finitness of possible loop unrollings)
-\item Describe from the point of view of Theorem 2?
-\item Counterexamples in addition analyzed based on farkas lemma (in our implementation)
+\item checking counterexample infeasibility may diverge / timeout
+\item finite unrollings are not enough
+\item in addition analyze using termination argument
+\item we apply Farkas' lemma to loops in context of linear arithmetic
+\item yielding well-founded relation to refine system
 \end{itemize}
 \end{frame}
 
 
 
 
-\begin{frame}{Evaluation}
+\begin{frame}{L2S with Implicit Abstraction and Well-founded Relations}
+\framesubtitle{Counterexamples}
+\begin{center}
+\begin{tikzpicture}[->, >=stealth, every node/.style={circle, draw, minimum size=0.75cm}]
+\node (P-1) at (2, 0) {};
+\node (P-2) at (4, 0) {};
+\node (P-3) at (6, 0) {};
+\node (P-4) at (6 + 2 * sin 60, -2 * cos 60) {};
+\node (P-5) at (6 + 2 * sin 60,  2 * cos 60) {};
+\draw (P-1) -- (P-2);
+\draw (P-2) -- (P-3);
+\draw (P-3) to[bend right=40] node[draw=none,label={[label distance=-0.5ex]240:$x \le 10$}] {} (P-4);
+\draw (P-4) to[bend right=40] node[draw=none,label={right:$f'$}] {} (P-5);
+\draw (P-5) to[bend right=40] node[draw=none,label={[label distance=-0.5ex]120:$x' = x + 1$}] {} (P-3);
+\end{tikzpicture}
+\end{center}
+\begin{itemize}
+\item ranking function $r(x) \stackrel{\text{\tiny def}}{=} 10 - x$
+\item lower bound $0$
+\item well-founded relation $\Phi(X, X') \stackrel{\text{\tiny def}}{=} 0 \le r(x') < r(x)$
+\item shows infeasibility of infinite unrolling of the loop
+\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{L2S with Implicit Abstraction and Well-founded Relations}
+\framesubtitle{Extending L2S with Implicit Abstraction}
+\begin{itemize}
+\item keep abstract loop detection of L2S
+\item maintain a copy of theory variables $\overline{X}$
+\item maintain a set of well-founded relations $\Phi_i$ over ${\color{green!40!black}X}$ and $\overline{X}$
+\item maintain a flag of rankedness $r$, initially $\top$
+\end{itemize}
+\vskip1em
+\begin{itemize}
+\item on some occurrence of $f$ (non-det): $\overline{X} \gets {\color{green!40!black}X}$
+\item on all subsequent occurrences of $f$: $r \gets r \land \bigvee \Phi_i({\color{green!40!black}X}, \overline{X})$
+\item verify that all detected loops satisfy $r$
+\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{L2S with Implicit Abstraction and Well-founded Relations}
+\framesubtitle{Overview}
+\begin{itemize}
+\item start with no well-founded relation and coarse abstraction
+\item detect abstract lasso-shaped counterexample
+\item concretize using BMC
+\item refute by a few unrollings (predicate abstraction)
+\item refute by termination argument (well-founded relations)
+\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Conclusion}
 \begin{itemize}
 \item implemented via IC3
 \item compared with state-of-the-art tools (HSF, Ultimate-LTL, T2)
 \item \ldots
 \end{itemize}
-\end{frame}
-
-
-
-
-\begin{frame}{Conclusion \& Future}
 \end{frame}
 
 \end{document}
