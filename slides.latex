@@ -20,59 +20,58 @@ Sergio Mover\mark{3}
 
 
 
-\begin{frame}{Background}
+\begin{frame}{Outline}
+\begin{itemize}
+\item we start with standard ltl model checking techniques (finite state)
+\item in which case we search for loops
+\begin{itemize}
+\item no longer sufficient in infinite state case
+\item L2S unsound (infinite path not necessarily loops in an infinite state space)
+\begin{itemize}
+\item theory variables $X$ over infinite domain
+\item $\mathbf{GF}f$ path may not be looping
+\end{itemize}
+\item k-liveness sound but not complete
+\end{itemize}
+\item so we turn infinite state to finite state using abstraction
+\item refute looping counterexamples
+\end{itemize}
 \end{frame}
 
 
 
-
-\begin{frame}{Model-checking LTL properties}
+\def\F{\mathbf{F}}
+\def\G{\mathbf{G}}
+\begin{frame}{}
 \begin{itemize}
-\item Ranking
-\item Automata-based
-\item but also SAT-based
-\item convert arbitrary LTL to $\mathbf{FG}\neg f$
+\item checking an arbitrary LTL reduced to checking $\F\G\neg f$
+\item counterexample: infinite path with infinite number of occurrences of $f$
+\item in deterministic finite state space: necessarily looping
+\item existence of a lasso (stem + loop) is necessary and sufficient condition to violation of the property
 \end{itemize}
 \end{frame}
 
 
 
 
-\begin{frame}{Model-checking LTL properties of symbolic finite-state TS}
-Generic symbolic transition systems
-
-$$
-\def\descsep{\rule{0pt}{1.4em}}
-\langle \underset{\text{\color{green!40!black}\descsep variables}}{X}, \underset{\text{\color{blue!50!black}\descsep initial}}{I}, \underset{\text{\color{orange!50!black}\descsep transition}}{T} \rangle
-$$
-
-Example
-
-$$
-\langle \left\{ a, b, c \right\}, \big[ a \big], \big[ a \land \left(a' \lor b'\right) \big] \lor \big[ b \land c' \big] \lor \big[ c \land c' \big] \rangle
-$$
-
-\begin{center}
-\begin{tikzpicture}[->, >=stealth, every node/.style={circle, draw, minimum size=0.75cm}]
-\node (P-1) at (2, 0) {a};
-\node (P-2) at (4, 0) {b};
-\node (P-3) at (6, 0) {c};
-\draw (P-1) to (P-2);
-\draw (P-2) to (P-3);
-\draw (P-1)++(-1,0) to (P-1);
-\draw (P-1) to[loop] (P-1);
-\draw (P-3) to[loop] (P-3);
-\end{tikzpicture}
-\end{center}
+%solving two problems:
+% a) find the precise-enough system
+% b) prove the system correct
+\begin{frame}{}
+\begin{itemize}
+\item turn infinite state space into finite state space via predicate abstraction
+\item focus on L2S, k-liveness (SAT-based techniques)
+\item how to find the abstraction?: ic3
+\end{itemize}
 \end{frame}
 
 
 
 
-\begin{frame}{Let's focus on SAT-based techniques}
-\end{frame}
-
-
+%then l2s / k-liveness
+%then details
+%relwork (check reviews for points)
+%5mins for expeval (explain how it shows that we rock)
 
 
 \begin{frame}{Liveness-to-safety (L2S)}
@@ -112,23 +111,23 @@ there is loop iff $\mathbf{GF}f$ hence safety property $\neg loop$ proves $\math
 
 
 
-\begin{frame}{Liveness-to-safety (L2S)}
-\framesubtitle{Counterexample to $\mathbf{FG}\neg f$}
-\begin{center}
-\begin{tikzpicture}[->, >=stealth, every node/.style={circle, draw, minimum size=0.75cm}]
-\foreach \x in {1, 2, 4, 6}
-    \node<\x-> (P-\x) at (1.5 * \x,0) {};
-\foreach \x in {3, 7}
-    \node<\x->[fill=green!40!black,label={above:${\color{green!40!black}X} = \overline{X}$}] (P-\x) at (1.5 * \x,0) {};
-\foreach \x in {5}
-    \node<\x-> (P-\x) at (1.5 * \x,0) {$f$};
-\foreach \from/\to in {1/2, 2/3, 3/4, 4/5, 5/6, 6/7}
-    \draw<\to-> (P-\from) -- (P-\to);
-\path<8-> (P-3) edge[<->,bend right=60] node[draw=none,label={below:$\mathbf{GF}f$}] {} (P-7);
-\clip (1.5, -3) rectangle (12, 2);
-\end{tikzpicture}
-\end{center}
-\end{frame}
+%\begin{frame}{Liveness-to-safety (L2S)}
+%\framesubtitle{Counterexample to $\mathbf{FG}\neg f$}
+%\begin{center}
+%\begin{tikzpicture}[->, >=stealth, every node/.style={circle, draw, minimum size=0.75cm}]
+%\foreach \x in {1, 2, 4, 6}
+%    \node<\x-> (P-\x) at (1.5 * \x,0) {};
+%\foreach \x in {3, 7}
+%    \node<\x->[fill=green!40!black,label={above:${\color{green!40!black}X} = \overline{X}$}] (P-\x) at (1.5 * \x,0) {};
+%\foreach \x in {5}
+%    \node<\x-> (P-\x) at (1.5 * \x,0) {$f$};
+%\foreach \from/\to in {1/2, 2/3, 3/4, 4/5, 5/6, 6/7}
+%    \draw<\to-> (P-\from) -- (P-\to);
+%\path<8-> (P-3) edge[<->,bend right=60] node[draw=none,label={below:$\mathbf{GF}f$}] {} (P-7);
+%\clip (1.5, -3) rectangle (12, 2);
+%\end{tikzpicture}
+%\end{center}
+%\end{frame}
 
 
 
@@ -179,21 +178,6 @@ $$
 
 
 
-\begin{frame}{Infinite-state case}
-Direct extension to infinite-state
-\begin{itemize}
-\item L2S unsound
-\begin{itemize}
-\item theory variables $X$ over infinite domain
-\item $\mathbf{GF}f$ path may not be looping
-\end{itemize}
-\item k-liveness sound but not complete
-\end{itemize}
-\end{frame}
-
-
-
-
 \begin{frame}{L2S with Predicate Abstraction}
 \begin{itemize}
 \item sound again by use of Predicate Abstraction
@@ -207,12 +191,6 @@ Direct extension to infinite-state
 \item not only refinement loop may diverge
 \item non-lasso-shaped counterexamples
 \end{itemize}
-\end{frame}
-
-
-
-
-\begin{frame}{Contribution}
 \end{frame}
 
 
@@ -304,6 +282,43 @@ Direct extension to infinite-state
 \item refute by a few unrollings (predicate abstraction)
 \item refute by termination argument (well-founded relations)
 \end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Evaluation}
+\begin{itemize}
+\item we used what we would like to think is a rather extensive set of benchmarks (835)
+\begin{itemize}
+\item symbolic transition systems
+\item imperative programs
+\item termination
+\end{itemize}
+\item we compared with other state-of-the-art tools
+\begin{itemize}
+\item HSF
+\item Ultimate-LTL
+\item T2(-CTL*)
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Evaluation highlights}
+Summary:
+\begin{itemize}
+\item we solved 602/835 (72\%)
+\item ultimate came second with 263 (31\%)
+\item t2-ctl* (14\%)
+\item hsf (12\%)
+\end{itemize}
+Breakdown:
+\begin{tabular}{rrrrr}
+            & us   & ult  & t2   & hsf  \\
+symbolic    & 67\% & 10\% &  0\% &  4\% \\
+imperative  & 88\% & 71\% & 42\% & 28\% \\
+termination & 78\% & 76\% & 41\% & 27\% \\
+\end{tabular}
 \end{frame}
 
 
