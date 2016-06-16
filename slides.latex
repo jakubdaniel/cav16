@@ -1,4 +1,4 @@
-\documentclass{beamer}
+\documentclass[table]{beamer}
 
 \usepackage{tikz}
 
@@ -20,58 +20,41 @@ Sergio Mover\mark{3}
 
 
 
-\begin{frame}{Outline}
-\begin{itemize}
-\item we start with standard ltl model checking techniques (finite state)
-\item in which case we search for loops
-\begin{itemize}
-\item no longer sufficient in infinite state case
-\item L2S unsound (infinite path not necessarily loops in an infinite state space)
-\begin{itemize}
-\item theory variables $X$ over infinite domain
-\item $\mathbf{GF}f$ path may not be looping
-\end{itemize}
-\item k-liveness sound but not complete
-\end{itemize}
-\item so we turn infinite state to finite state using abstraction
-\item refute looping counterexamples
-\end{itemize}
-\end{frame}
-
-
-
 \def\F{\mathbf{F}}
 \def\G{\mathbf{G}}
-\begin{frame}{}
+\begin{frame}{Outline}
 \begin{itemize}
+\item standard LTL model checking techniques for finite state
 \item checking an arbitrary LTL reduced to checking $\F\G\neg f$
-\item counterexample: infinite path with infinite number of occurrences of $f$
-\item in deterministic finite state space: necessarily looping
-\item existence of a lasso (stem + loop) is necessary and sufficient condition to violation of the property
-\end{itemize}
-\end{frame}
-
-
-
-
-%solving two problems:
-% a) find the precise-enough system
-% b) prove the system correct
-\begin{frame}{}
+\item counterexample infinite path satisfying $\G\F f$
+\item need to be looping (lasso shape)
+\item no longer true in infinite state case
+\item direct lifting of L2S unsound, k-liveness incomplete
+\item turn infinite state to finite state using abstraction
+\item refute looping abstract counterexamples
 \begin{itemize}
-\item turn infinite state space into finite state space via predicate abstraction
-\item focus on L2S, k-liveness (SAT-based techniques)
-\item how to find the abstraction?: ic3
+\item refine abstraction
+\item block infinite abstract paths
+\end{itemize}
 \end{itemize}
 \end{frame}
 
 
 
 
-%then l2s / k-liveness
-%then details
-%relwork (check reviews for points)
-%5mins for expeval (explain how it shows that we rock)
+\begin{frame}{Liveness-to-safety (L2S)}
+Idea:
+\begin{itemize}
+\item every infinite path has to loop
+\item should $\F\G \neg f$ be violated, $f$ needs to occur in some such loop
+\item otherwise all paths satisfy $\F\G \neg f$
+\item therefore, search for loop that contains $f$ (safety property)
+\item unrolling such loop gives the infinite counterexample
+\item absence of any such loop proves the property
+\end{itemize}
+\end{frame}
+
+
 
 
 \begin{frame}{Liveness-to-safety (L2S)}
@@ -178,35 +161,20 @@ $$
 
 
 
-\begin{frame}{L2S with Predicate Abstraction}
-\begin{itemize}
-\item sound again by use of Predicate Abstraction
+\begin{frame}{L2S with Implicit Predicate Abstraction}
 \begin{itemize}
 \item fixed set of abstraction predicates $P$
-\item initially guess valuation of predicates $\overline{P}$
-\item search for repeated abstract state (where $P({\color{green!40!black}X}) = \overline{P}$)
-\end{itemize}
-\item CEGAR
-\item finite number of predicates not enough to prove safety
-\item not only refinement loop may diverge
+\item initially guess valuation of predicates $\overline{P}$ (an abstract state)
+\item search for repetition of the state (where $P({\color{green!40!black}X}) = \overline{P}$)
+\item closes loop containing $f$ - counterexample
+\item CEGAR - check sequence of finer and finer systems
+\item at anypoint safe means $\mathbf{FG}\neg f$ holds % no cex
+\item concretize counterexample using BMC % search for concrete lasso
 \item non-lasso-shaped counterexamples
-\end{itemize}
-\end{frame}
-
-
-
-
-\begin{frame}{L2S with Implicit Abstraction}
-\begin{itemize}
-\item implicit abstraction (avoid explosion)
-\item check sequence of finer and finer systems
-\item at anypoint safe means $\mathbf{FG}\neg f$ holds in original
-\item finite counterexample analyzed
-\begin{itemize}
-\item concrete loop by BMC
-\item but concrete counterexample need not be looping
-\item infeasible due to unrollings (may diverge / timeout)
-\end{itemize}
+\item infeasible prefix of the infinite path
+\item all prefixes feasible, still infeasible
+\item finite number of predicates not enough to prove safety in general
+\item not only refinement loop may diverge % what was the message here?
 \end{itemize}
 \end{frame}
 
@@ -254,19 +222,64 @@ $$
 
 
 
+\begin{frame}
+Search for an abstract path that
+\begin{itemize}
+\item is lasso-shaped
+\item may be unrolled into a concrete infinite path
+\end{itemize}
+\end{frame}
+
+
+
+
 \begin{frame}{L2S with Implicit Abstraction and Well-founded Relations}
 \framesubtitle{Extending L2S with Implicit Abstraction}
 \begin{itemize}
 \item keep abstract loop detection of L2S
 \item maintain a copy of theory variables $\overline{X}$
 \item maintain a set of well-founded relations $\Phi_i$ over ${\color{green!40!black}X}$ and $\overline{X}$
-\item maintain a flag of rankedness $r$, initially $\top$
+\item maintain a flag of \emph{"rankedness"} $r$, initially $\top$
 \end{itemize}
 \vskip1em
 \begin{itemize}
 \item on some occurrence of $f$ (non-det): $\overline{X} \gets {\color{green!40!black}X}$
 \item on all subsequent occurrences of $f$: $r \gets r \land \bigvee \Phi_i({\color{green!40!black}X}, \overline{X})$
 \item verify that all detected loops satisfy $r$
+\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Refinement}
+\begin{itemize}
+\item try concretizing the exact lasso
+\item try showing that some prefix of the infinite unrolling is infeasible
+\item try showing that infinite unrolling is infeasible (using termination argument)
+\begin{itemize}
+\item enumerate fixed simple paths through the loop
+\item apply Farkas'
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{k-liveness as a special case}
+\begin{itemize}
+\item augment the system with a $counter$
+\begin{itemize}
+\item initialized to $0$
+\item incremented on occurrence of $f$
+\end{itemize}
+\item refine using well-founded relation
+$$0 \le k - counter' < k - counter $$ %\text{\rlap{$\quad^\star$}}$$
+for increasing values of $k$
+%\\ {\small $^\star$ it suffices to maintain only $counter' \le k$ for the largest value of $k$ as monotonicity is guaranteed}
+\item terminates upon successfully proving/falsifying the property
+\item makes progress should both concretization and refutation of an abstract counterexample fail
 \end{itemize}
 \end{frame}
 
@@ -281,11 +294,36 @@ $$
 \item concretize using BMC
 \item refute by a few unrollings (predicate abstraction)
 \item refute by termination argument (well-founded relations)
+\item optionally make progress using k-liveness
 \end{itemize}
 \end{frame}
 
 
 
+
+%relwork (check reviews for points)
+\begin{frame}{Related work}
+The state-of-the-art implementations
+\begin{itemize}
+\item Ultimate-LTL
+\begin{itemize}
+\item B\"uchi automata
+\item lasso enumeration and blocking
+\item programs (control-flow graphs)
+\end{itemize}
+\item HSF
+\begin{itemize}
+\item Horn-like clauses solver
+\item search for well-founded transition invariants
+\end{itemize}
+\item T2
+\begin{itemize}
+\item two flavors: plain termination, CTL*
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+%5mins for expeval (explain how it shows that we rock)
 
 \begin{frame}{Evaluation}
 \begin{itemize}
@@ -295,30 +333,53 @@ $$
 \item imperative programs
 \item termination
 \end{itemize}
-\item we compared with other state-of-the-art tools
+\item we compared with HSF, Ultimate-LTL, T2(-CTL*)
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Benchmarks}
 \begin{itemize}
-\item HSF
-\item Ultimate-LTL
-\item T2(-CTL*)
+\item Symbolic Transition Systems (556)
+\begin{itemize}
+\item BIP models, discretized real-time/hybrid systems
+\end{itemize}
+\item Imperative Programs (86)
+\begin{itemize}
+\item Ultimate-LTL suite, hand-crafted
+\item knowledge of CFG
+\end{itemize}
+\item Termination (193)
+\begin{itemize}
+\item T2 suite
 \end{itemize}
 \end{itemize}
 \end{frame}
 
+\def\fst{\cellcolor{orange}}
+\def\snd{}
+\def\trd{}
+\def\for{}
+\def\fif{}
 \begin{frame}{Evaluation highlights}
-Summary:
-\begin{itemize}
-\item we solved 602/835 (72\%)
-\item ultimate came second with 263 (31\%)
-\item t2-ctl* (14\%)
-\item hsf (12\%)
-\end{itemize}
-Breakdown:
-\begin{tabular}{rrrrr}
-            & us   & ult  & t2   & hsf  \\
-symbolic    & 67\% & 10\% &  0\% &  4\% \\
-imperative  & 88\% & 71\% & 42\% & 28\% \\
-termination & 78\% & 76\% & 41\% & 27\% \\
+Solved instances out of 835 benchmarks: \\
+\begin{center}
+\begin{tabular}{lr}
+L2Sia-wfr    & \fst 72\% \\
+Ultimate-LTL & \snd 31\% \\
+T2-CTL*      & \trd 14\% \\
+HSF          & \for 12\% \\
 \end{tabular}
+\end{center}
+\vskip1cm
+Breakdown: \\
+\begin{center}
+\begin{tabular}{rrrrrr}
+            & L2Sia-wfr & Ultimate-LTL & T2-CTL*   & HSF       & T2        \\
+symbolic    & \fst 67\% & \snd 10\%    & \for  0\% & \trd  4\% &           \\
+imperative  & \fst 88\% & \snd 71\%    & \trd 42\% & \for 28\% &           \\
+termination & \snd 78\% & \trd 76\%    & \for 41\% & \fif 27\% & \fst 99\% \\
+\end{tabular}
+\end{center}
 \end{frame}
 
 
