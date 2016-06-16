@@ -166,13 +166,13 @@ $$
 \item fixed set of abstraction predicates $P$
 \item initially guess valuation of predicates $\overline{P}$ (an abstract state)
 \item search for repetition of the state (where $P({\color{green!40!black}X}) = \overline{P}$)
-\item closes loop containing $f$ - counterexample
+\item close loop containing $f$ - counterexample
 \item CEGAR - check sequence of finer and finer systems
 \item at anypoint safe means $\mathbf{FG}\neg f$ holds % no cex
 \item concretize counterexample using BMC % search for concrete lasso
 \item non-lasso-shaped counterexamples
 \item infeasible prefix of the infinite path
-\item all prefixes feasible, still infeasible
+\item all finite prefixes feasible, still infeasible
 \item finite number of predicates not enough to prove safety in general
 \item not only refinement loop may diverge % what was the message here?
 \end{itemize}
@@ -222,17 +222,6 @@ $$
 
 
 
-\begin{frame}
-Search for an abstract path that
-\begin{itemize}
-\item is lasso-shaped
-\item may be unrolled into a concrete infinite path
-\end{itemize}
-\end{frame}
-
-
-
-
 \begin{frame}{L2S with Implicit Abstraction and Well-founded Relations}
 \framesubtitle{Extending L2S with Implicit Abstraction}
 \begin{itemize}
@@ -260,6 +249,7 @@ Search for an abstract path that
 \begin{itemize}
 \item enumerate fixed simple paths through the loop
 \item apply Farkas'
+\item non-periodic unrollings are not considered (thus we may fail showing infeasibility)
 \end{itemize}
 \end{itemize}
 \end{frame}
@@ -361,7 +351,7 @@ The state-of-the-art implementations
 \def\for{}
 \def\fif{}
 \begin{frame}{Evaluation highlights}
-Solved instances out of 835 benchmarks: \\
+Solved instances out of 835 benchmarks in 20 min: \\
 \begin{center}
 \begin{tabular}{lr}
 L2Sia-wfr    & \fst 72\% \\
