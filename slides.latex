@@ -1,6 +1,7 @@
 \documentclass[table]{beamer}
 
 \usepackage{tikz}
+\usepackage{amsmath}
 
 \def\mark#1{$^\text{#1}$}
 \def\marktext#1#2{\mark{#1}#2}
@@ -241,16 +242,51 @@ $$
 
 
 
-\begin{frame}{Refinement}
+\begin{frame}{Abstract Counterexamples}
+\framesubtitle{Concretizing}
 \begin{itemize}
-\item try concretizing the exact lasso
-\item try showing that some prefix of the infinite unrolling is infeasible
-\item try showing that infinite unrolling is infeasible (using termination argument)
+\item try concretizing the exact lasso by searching for model of
+$$
+I \land s_0 \land T \land \ldots \land \Big[ s_l^l \land T^l \land \ldots \land s_k^k \Big] \land X_l = X_k
+$$
+with $s_i$ being abstract state visited by lasso at time $i$
+
+\item bounded model checking
+\item non-lasso concrete counterexamples will not be recognized % leading to unknown/divergence
+\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Abstract Counterexample}
+\framesubtitle{Refuting}
+\begin{itemize}
+\item some finite prefix of infinite unrolling
+$$
+\begin{array}{l}
+I \land s_0 \land T \land \ldots \Big[ s_l^l \land T^l \land \ldots s_k^k \Big] \\
+I \land s_0 \land T \land \ldots \Big[ s_l^l \land T^l \land \ldots s_k^k \Big] \land \Big[ s_l^{k+1} \land T^{k+1} \land \ldots s_k^{2k} \Big] \\
+\ldots
+\end{array}
+$$
+\item infinite (but periodic) unrolling
 \begin{itemize}
 \item enumerate fixed simple paths through the loop
-\item apply Farkas'
-\item non-periodic unrollings are not considered (thus we may fail showing infeasibility)
+\item apply termination argument: Farkas' lemma
 \end{itemize}
+\item non-periodic infinite paths are not analyzed % so this step may fail
+\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Refinement}
+\begin{itemize}
+\item interpolants from infeasibility of prefixes
+\item well-founded relation from termination argument
+\item \ldots
 \end{itemize}
 \end{frame}
 
