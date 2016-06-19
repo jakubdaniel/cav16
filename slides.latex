@@ -116,48 +116,30 @@ there is loop iff $\mathbf{GF}f$ hence safety property $\neg loop$ proves $\math
 
 
 
-\begin{frame}{k-liveness}
-$f$ is visited at most $k$ times, then $\mathbf{FG}\neg f$
-
-sequence of checks $k = 1, 2, \ldots$
-
-\begin{itemize}
-\item initialize $counter$ to $0$
-\item increase $counter$ whenever $f$ becomes satisfied
-\item keep $counter$ unchanged when $\neg f$ is satisfied
-\item safety property $counter \le k$
-\item for large enough $k$, repeated state closes loop containing $f$
-\item alternatively, BMC
-\end{itemize}
-\end{frame}
-
-
-
-
-\begin{frame}{Infinite-state case}
-$$
-\def\descsep{\rule{0pt}{1.4em}}
-\langle \underset{\text{\color{green!40!black}\descsep variables}}{X}, \underset{\text{\color{blue!50!black}\descsep initial}}{I}, \underset{\text{\color{orange!50!black}\descsep transition}}{T} \rangle
-$$
-
-Example
-
-$$
-\langle {\color{green!40!black}\left\{ x \right\}}, {\color{blue!50!black}\big[x = 0\big]}, {\color{orange!50!black} \big[x' = x\big] \lor \big[x < 10 \land x' = x + 1\big]} \rangle
-$$
-
-Property 1
-
-$$
-    \models \mathbf{G} (x \le 10)
-$$
-
-Property 2
-
-$$
-    \not\models \mathbf{F} (x = 10)
-$$
-\end{frame}
+%\begin{frame}{Infinite-state case}
+%$$
+%\def\descsep{\rule{0pt}{1.4em}}
+%\langle \underset{\text{\color{green!40!black}\descsep variables}}{X}, \underset{\text{\color{blue!50!black}\descsep initial}}{I}, \underset{\text{\color{orange!50!black}\descsep transition}}{T} \rangle
+%$$
+%
+%Example
+%
+%$$
+%\langle {\color{green!40!black}\left\{ x \right\}}, {\color{blue!50!black}\big[x = 0\big]}, {\color{orange!50!black} \big[x' = x\big] \lor \big[x < 10 \land x' = x + 1\big]} \rangle
+%$$
+%
+%Property 1
+%
+%$$
+%    \models \mathbf{G} (x \le 10)
+%$$
+%
+%Property 2
+%
+%$$
+%    \not\models \mathbf{F} (x = 10)
+%$$
+%\end{frame}
 
 
 
@@ -286,14 +268,38 @@ $$
 \begin{itemize}
 \item interpolants from infeasibility of prefixes
 \item well-founded relation from termination argument
-\item \ldots
+\begin{itemize}
+\item from ranking functions $r(X)$ with lower bound $0$
+\item well-founded by construction
+$$
+0 \le r(X) < r(\overline{X})
+$$
+\end{itemize}
 \end{itemize}
 \end{frame}
 
 
 
 
-\begin{frame}{k-liveness as a special case}
+\begin{frame}{k-liveness}
+$f$ is visited at most $k$ times, then $\mathbf{FG}\neg f$
+
+sequence of checks $k = 1, 2, \ldots$
+
+\begin{itemize}
+\item initialize $counter$ to $0$
+\item increase $counter$ whenever $f$ becomes satisfied
+\item keep $counter$ unchanged when $\neg f$ is satisfied
+\item safety property $counter \le k$
+\item for large enough $k$, repeated state closes loop containing $f$
+\item alternatively, BMC
+\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{k-liveness as special implicit refinement method}
 \begin{itemize}
 \item augment the system with a $counter$
 \begin{itemize}
@@ -413,9 +419,9 @@ termination & \snd 78\% & \trd 76\%    & \for 41\% & \fif 27\% & \fst 99\% \\
 
 \begin{frame}{Conclusion}
 \begin{itemize}
-\item implemented via IC3
-\item compared with state-of-the-art tools (HSF, Ultimate-LTL, T2)
-\item \ldots
+\item implemented via IC3: TODO url to some github page?
+\item compared with state-of-the-art tools
+\item future: enhancements to concretization, refuting even more general loops
 \end{itemize}
 \end{frame}
 
