@@ -293,8 +293,8 @@ sequence of checks $k = 1, 2, \ldots$
 \item increase $counter$ whenever $f$ becomes satisfied
 \item keep $counter$ unchanged when $\neg f$ is satisfied
 \item safety property $counter \le k$
-\item for large enough $k$, repeated state closes loop containing $f$
-\item alternatively, BMC
+%\item for large enough $k$, repeated state closes loop containing $f$
+%\item alternatively, BMC
 \end{itemize}
 \end{frame}
 
@@ -312,23 +312,9 @@ sequence of checks $k = 1, 2, \ldots$
 $$0 \le k - counter' < k - counter $$ %\text{\rlap{$\quad^\star$}}$$
 for increasing values of $k$
 %\\ {\small $^\star$ it suffices to maintain only $counter' \le k$ for the largest value of $k$ as monotonicity is guaranteed}
+\item fallback should both concretization and refutation fail
 \item terminates upon successfully proving/falsifying the property
-\item makes progress should both concretization and refutation of an abstract counterexample fail
-\end{itemize}
-\end{frame}
-
-
-
-
-\begin{frame}{L2S with Implicit Abstraction and Well-founded Relations}
-\framesubtitle{Overview}
-\begin{itemize}
-\item start with no well-founded relation and coarse abstraction
-\item detect abstract lasso-shaped counterexample
-\item concretize using BMC
-\item refute by a few unrollings (predicate abstraction)
-\item refute by termination argument (well-founded relations)
-\item optionally make progress using k-liveness
+\item always makes progress
 \end{itemize}
 \end{frame}
 
@@ -357,37 +343,35 @@ The state-of-the-art implementations
 \end{itemize}
 \end{frame}
 
-%5mins for expeval (explain how it shows that we rock)
 
+
+
+%5mins for expeval (explain how it shows that we rock)
 \begin{frame}{Evaluation}
 \begin{itemize}
-\item we used what we would like to think is a rather extensive set of benchmarks (835)
+%\item we used what we would like to think is a rather extensive set of benchmarks (835)
+\item extensive set of benchmarks (835)
 \begin{itemize}
-\item symbolic transition systems
-\item imperative programs
-\item termination
+\item symbolic transition systems (556)
+\begin{itemize}
+\item BIP models, discretized real-time/hybrid systems
+\end{itemize}
+\item imperative programs (86)
+\begin{itemize}
+\item Ultimate-LTL suite, hand-crafted
+\item knowledge of CFG
+\end{itemize}
+\item termination (193)
+\begin{itemize}
+\item T2 suite
+\end{itemize}
 \end{itemize}
 \item we compared with HSF, Ultimate-LTL, T2(-CTL*)
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Benchmarks}
-\begin{itemize}
-\item Symbolic Transition Systems (556)
-\begin{itemize}
-\item BIP models, discretized real-time/hybrid systems
-\end{itemize}
-\item Imperative Programs (86)
-\begin{itemize}
-\item Ultimate-LTL suite, hand-crafted
-\item knowledge of CFG
-\end{itemize}
-\item Termination (193)
-\begin{itemize}
-\item T2 suite
-\end{itemize}
-\end{itemize}
-\end{frame}
+
+
 
 \def\fst{\cellcolor{orange}}
 \def\snd{}
@@ -421,8 +405,20 @@ termination & \snd 78\% & \trd 76\%    & \for 41\% & \fif 27\% & \fst 99\% \\
 
 \begin{frame}{Conclusion}
 \begin{itemize}
-\item implemented via IC3: TODO url to some github page?
+\item infinite state LTL model checking based on L2S, abstraction, well-founded relations
+\begin{itemize}
+\item start with no well-founded relation and coarse abstraction
+\item detect abstract lasso-shaped counterexample
+\item concretize using BMC
+\item refute by a few unrollings (predicate abstraction)
+\item refute by termination argument (well-founded relations)
+\item optionally make progress using k-liveness
+\end{itemize}
+\item implemented via IC3
 \item compared with state-of-the-art tools
+\begin{center}
+TODO url github page?
+\end{center}
 \item future: enhancements to concretization, refuting even more general loops
 \end{itemize}
 \end{frame}
