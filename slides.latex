@@ -254,12 +254,14 @@ I \land s_0 \land T \land \ldots \Big[ s_l^l \land T^l \land \ldots s_k^k \Big] 
 \ldots
 \end{array}
 $$
-\item infinite (but periodic) unrolling
+\item infinite unrolling
 \begin{itemize}
 \item enumerate fixed simple paths through the loop
+\item no disjunctions
 \item apply termination argument: Farkas' lemma
 \end{itemize}
-\item non-periodic infinite paths are not analyzed % so this step may fail
+\item non-periodic infinite paths are not analyzed
+\item fixed disjuncts unrolled
 \end{itemize}
 \end{frame}
 
@@ -269,14 +271,15 @@ $$
 \begin{frame}{Refinement}
 \begin{itemize}
 \item interpolants from infeasibility of prefixes
+\item searching for loops in finer state space
 \item well-founded relation from termination argument
-\begin{itemize}
 \item from ranking functions $r(X)$ with lower bound $0$
 \item well-founded by construction
 $$
 0 \le r(X) < r(\overline{X})
 $$
-\end{itemize}
+\item adding such relation blocks the loop in question
+\item intuitively, loops are not considered counterexamples as long as they cannot be unrolled indefinitely
 \end{itemize}
 \end{frame}
 
