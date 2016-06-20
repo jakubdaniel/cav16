@@ -27,7 +27,7 @@ Sergio Mover\mark{3}
 \begin{itemize}
 \item standard LTL model checking techniques for finite state
 \item checking an arbitrary LTL reduced to checking $\F\G\neg f$
-\item counterexample infinite path satisfying $\G\F f$
+\item counterexample infinite path % satisfying $\G\F f$
 \item need to be looping (lasso shape)
 \item no longer true in infinite state case
 \item direct lifting of L2S unsound, k-liveness incomplete
@@ -256,9 +256,9 @@ I \land s_0 \land T \land \ldots \Big[ s_l^l \land T^l \land \ldots s_k^k \Big] 
 $$
 \item infinite unrolling
 \begin{itemize}
+\item apply termination argument: Farkas' lemma
 \item enumerate fixed simple paths through the loop
 \item no disjunctions
-\item apply termination argument: Farkas' lemma
 \end{itemize}
 \item non-periodic infinite paths are not analyzed
 \item fixed disjuncts unrolled
