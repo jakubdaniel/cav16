@@ -88,7 +88,6 @@ where
 (${\color{orange!50!black}T_{L2S}}$)
 
 \begin{center}
-there is loop iff $\mathbf{GF}f$ hence safety property $\neg loop$ proves $\mathbf{FG} \neg f$
 \end{center}
 \end{frame}
 
@@ -147,17 +146,16 @@ there is loop iff $\mathbf{GF}f$ hence safety property $\neg loop$ proves $\math
 \begin{frame}{L2S with Implicit Predicate Abstraction}
 \begin{itemize}
 \item fixed set of abstraction predicates $P$
+\item add propositions $\overline{P}$ to the concrete system
 \item initially guess valuation of predicates $\overline{P}$ (an abstract state)
-\item search for repetition of the state (where $P({\color{green!40!black}X}) = \overline{P}$)
-\item close loop containing $f$ - counterexample
-\item CEGAR - check sequence of finer and finer systems
-\item at anypoint safe means $\mathbf{FG}\neg f$ holds % no cex
-\item concretize counterexample using BMC % search for concrete lasso
-\item non-lasso-shaped counterexamples
-\item infeasible prefix of the infinite path
-\item all finite prefixes feasible, still infeasible
-\item finite number of predicates not enough to prove safety in general
-\item not only refinement loop may diverge % what was the message here?
+\item search for state where $P({\color{green!40!black}X}) = \overline{P}$
+\item search for $f$
+\item search for state where $P({\color{green!40!black}X}) = \overline{P}$
+\item CEGAR
+\begin{itemize}
+\item concretize counterexample using BMC
+\item find infeasible prefix of the infinite path
+\end{itemize}
 \end{itemize}
 \end{frame}
 
@@ -166,12 +164,16 @@ there is loop iff $\mathbf{GF}f$ hence safety property $\neg loop$ proves $\math
 
 \begin{frame}{L2S with Implicit Abstraction and Well-founded Relations}
 \framesubtitle{Battling limitations of L2S with Implicit Abstraction}
+Limitations
 \begin{itemize}
-\item checking counterexample infeasibility may diverge / timeout
+\item non-lasso-shaped counterexamples % cannot be concretized
+\item all finite prefixes feasible (diverge/timeout), still infeasible % thats why we need wfr
+\item finite number of predicates not enough to prove safety in general
+\end{itemize}
+Conclusions
+\begin{itemize}
 \item finite unrollings are not enough
-\item in addition analyze using termination argument
-\item we apply Farkas' lemma to loops in context of linear arithmetic
-\item yielding well-founded relation to refine system
+\item analyze infinite unrolling using termination argument
 \end{itemize}
 \end{frame}
 
@@ -198,7 +200,7 @@ there is loop iff $\mathbf{GF}f$ hence safety property $\neg loop$ proves $\math
 \item ranking function $r(x) \stackrel{\text{\tiny def}}{=} 10 - x$
 \item lower bound $0$
 \item well-founded relation $\Phi(X, X') \stackrel{\text{\tiny def}}{=} 0 \le r(x') < r(x)$
-\item shows infeasibility of infinite unrolling of the loop
+%\item shows infeasibility of infinite unrolling of the loop
 \end{itemize}
 \end{frame}
 
