@@ -283,20 +283,20 @@ $$
 
 
 
-\begin{frame}{k-liveness}
-$f$ is visited at most $k$ times, then $\mathbf{FG}\neg f$
-
-sequence of checks $k = 1, 2, \ldots$
-
-\begin{itemize}
-\item initialize $counter$ to $0$
-\item increase $counter$ whenever $f$ becomes satisfied
-\item keep $counter$ unchanged when $\neg f$ is satisfied
-\item safety property $counter \le k$
-%\item for large enough $k$, repeated state closes loop containing $f$
-%\item alternatively, BMC
-\end{itemize}
-\end{frame}
+%\begin{frame}{k-liveness}
+%$f$ is visited at most $k$ times, then $\mathbf{FG}\neg f$
+%
+%sequence of checks $k = 1, 2, \ldots$
+%
+%\begin{itemize}
+%\item initialize $counter$ to $0$
+%\item increase $counter$ whenever $f$ becomes satisfied
+%\item keep $counter$ unchanged when $\neg f$ is satisfied
+%\item safety property $counter \le k$
+%%\item for large enough $k$, repeated state closes loop containing $f$
+%%\item alternatively, BMC
+%\end{itemize}
+%\end{frame}
 
 
 
