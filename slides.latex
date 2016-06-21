@@ -33,27 +33,27 @@ Sergio Mover\mark{3}
 \item direct lifting of L2S unsound, k-liveness incomplete
 \item turn infinite state to finite state using abstraction
 \item refute looping abstract counterexamples
-\begin{itemize}
-\item refine abstraction
-\item block infinite abstract paths
-\end{itemize}
-\end{itemize}
-\end{frame}
-
-
-
-
-\begin{frame}{Liveness-to-safety (L2S)}
-Idea:
-\begin{itemize}
-\item every infinite path has to loop
-\item should $\F\G \neg f$ be violated, $f$ needs to occur in some such loop
-\item otherwise all paths satisfy $\F\G \neg f$
-\item therefore, search for loop that contains $f$ (safety property)
-\item unrolling such loop gives the infinite counterexample
-\item absence of any such loop proves the property
+%\begin{itemize}
+%\item refine abstraction
+%\item block infinite abstract paths
+%\end{itemize}
 \end{itemize}
 \end{frame}
+
+
+
+
+%\begin{frame}{Liveness-to-safety (L2S)}
+%Idea:
+%\begin{itemize}
+%\item every infinite path has to loop
+%\item should $\F\G \neg f$ be violated, $f$ needs to occur in some such loop
+%\item otherwise all paths satisfy $\F\G \neg f$
+%\item therefore, search for loop that contains $f$ (safety property)
+%\item unrolling such loop gives the infinite counterexample
+%\item absence of any such loop proves the property
+%\end{itemize}
+%\end{frame}
 
 
 
@@ -212,14 +212,13 @@ Conclusions
 \begin{itemize}
 \item keep abstract loop detection of L2S
 \item maintain a copy of theory variables $\overline{X}$
-\item maintain a set of well-founded relations $\Phi_i$ over ${\color{green!40!black}X}$ and $\overline{X}$
-\item maintain a flag of \emph{"rankedness"} $r$, initially $\top$
+\item parametrised by well-founded relations $\Phi_i$ over ${\color{green!40!black}X}$ and $\overline{X}$
 \end{itemize}
 \vskip1em
 \begin{itemize}
+\item in loop
 \item on some occurrence of $f$ (non-det): $\overline{X} \gets {\color{green!40!black}X}$
-\item on all subsequent occurrences of $f$: $r \gets r \land \bigvee \Phi_i({\color{green!40!black}X}, \overline{X})$
-\item verify that all detected loops satisfy $r$
+\item on all subsequent occurrences of $f$ check $\bigvee \Phi_i({\color{green!40!black}X}, \overline{X})$
 \end{itemize}
 \end{frame}
 
@@ -227,24 +226,19 @@ Conclusions
 
 
 \begin{frame}{Abstract Counterexamples}
-\framesubtitle{Concretizing}
 \begin{itemize}
-\item try concretizing the exact lasso by searching for model of
-$$
-I \land s_0 \land T \land \ldots \land \Big[ s_l^l \land T^l \land \ldots \land s_k^k \Big] \land X_l = X_k
-$$
-with $s_i$ being abstract state visited by lasso at time $i$
-
-\item bounded model checking
-\item non-lasso concrete counterexamples will not be recognized % leading to unknown/divergence
-\end{itemize}
-\end{frame}
-
-
-
-
-\begin{frame}{Abstract Counterexample}
-\framesubtitle{Refuting}
+\item concretizing by BMC
+%\begin{itemize}
+%\item try concretizing the exact lasso by searching for model of
+%$$
+%I \land s_0 \land T \land \ldots \land \Big[ s_l^l \land T^l \land \ldots \land s_k^k \Big] \land X_l = X_k
+%$$
+%with $s_i$ being abstract state visited by lasso at time $i$
+%
+%\item bounded model checking
+%\item non-lasso concrete counterexamples will not be recognized % leading to unknown/divergence
+%\end{itemize}
+\item refuting
 \begin{itemize}
 \item some finite prefix of infinite unrolling
 $$
@@ -254,34 +248,37 @@ I \land s_0 \land T \land \ldots \Big[ s_l^l \land T^l \land \ldots s_k^k \Big] 
 \ldots
 \end{array}
 $$
+\item interpolants refine predicate abstraction
 \item infinite unrolling
 \begin{itemize}
 \item apply termination argument: Farkas' lemma
 \item enumerate fixed simple paths through the loop
 \item no disjunctions
+\item ranking function $\rightarrow$ well-founded relation
 \end{itemize}
 \item non-periodic infinite paths are not analyzed
 \item fixed disjuncts unrolled
 \end{itemize}
-\end{frame}
-
-
-
-
-\begin{frame}{Refinement}
-\begin{itemize}
-\item interpolants from infeasibility of prefixes
-\item searching for loops in finer state space
-\item well-founded relation from termination argument
-\item from ranking functions $r(X)$ with lower bound $0$
-\item well-founded by construction
-$$
-0 \le r(X) < r(\overline{X})
-$$
-\item adding such relation blocks the loop in question
-\item intuitively, loops are not considered counterexamples as long as they cannot be unrolled indefinitely
 \end{itemize}
 \end{frame}
+
+
+
+
+%\begin{frame}{Refinement}
+%\begin{itemize}
+%\item interpolants from infeasibility of prefixes
+%\item searching for loops in finer state space
+%\item well-founded relation from termination argument
+%\item from ranking functions $r(X)$ with lower bound $0$
+%\item well-founded by construction
+%$$
+%0 \le r(X) < r(\overline{X})
+%$$
+%\item adding such relation blocks the loop in question
+%\item intuitively, loops are not considered counterexamples as long as they cannot be unrolled indefinitely
+%\end{itemize}
+%\end{frame}
 
 
 
@@ -408,15 +405,6 @@ termination & \snd 78\% & \trd 76\%    & \for 41\% & \fif 27\% & \fst 99\% \\
 
 \begin{frame}{Conclusion}
 \begin{itemize}
-\item infinite state LTL model checking based on L2S, abstraction, well-founded relations
-\begin{itemize}
-\item start with no well-founded relation and coarse abstraction
-\item detect abstract lasso-shaped counterexample
-\item concretize using BMC
-\item refute by a few unrollings (predicate abstraction)
-\item refute by termination argument (well-founded relations)
-\item optionally make progress using k-liveness
-\end{itemize}
 \item implemented via IC3
 \item compared with state-of-the-art tools
 \begin{center}
