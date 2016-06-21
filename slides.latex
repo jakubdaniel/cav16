@@ -216,9 +216,10 @@ Conclusions
 \end{itemize}
 \vskip1em
 \begin{itemize}
-\item in loop
+\item after entering abstract loop
 \item on some occurrence of $f$ (non-det): $\overline{X} \gets {\color{green!40!black}X}$
 \item on all subsequent occurrences of $f$ check $\bigvee \Phi_i({\color{green!40!black}X}, \overline{X})$
+\item loop $\rightarrow$ check never failed
 \end{itemize}
 \end{frame}
 
@@ -257,7 +258,6 @@ $$
 \item ranking function $\rightarrow$ well-founded relation
 \end{itemize}
 \item non-periodic infinite paths are not analyzed
-\item fixed disjuncts unrolled
 \end{itemize}
 \end{itemize}
 \end{frame}
@@ -322,53 +322,53 @@ for increasing values of $k$
 
 
 %relwork (check reviews for points)
-\begin{frame}{Related work}
-The state-of-the-art implementations
-\begin{itemize}
-\item Ultimate-LTL
-\begin{itemize}
-\item B\"uchi automata
-\item lasso enumeration and blocking
-\item programs (control-flow graphs)
-\end{itemize}
-\item HSF
-\begin{itemize}
-\item Horn-like clauses solver
-\item search for well-founded transition invariants
-\end{itemize}
-\item T2
-\begin{itemize}
-\item two flavors: plain termination, CTL*
-\end{itemize}
-\end{itemize}
-\end{frame}
+%\begin{frame}{Related work}
+%The state-of-the-art implementations
+%\begin{itemize}
+%\item Ultimate-LTL
+%\begin{itemize}
+%\item B\"uchi automata
+%\item lasso enumeration and blocking
+%\item programs (control-flow graphs)
+%\end{itemize}
+%\item HSF
+%\begin{itemize}
+%\item Horn-like clauses solver
+%\item search for well-founded transition invariants
+%\end{itemize}
+%\item T2
+%\begin{itemize}
+%\item two flavors: plain termination, CTL*
+%\end{itemize}
+%\end{itemize}
+%\end{frame}
 
 
 
 
 %5mins for expeval (explain how it shows that we rock)
-\begin{frame}{Evaluation}
-\begin{itemize}
+%\begin{frame}{Evaluation}
+%\begin{itemize}
 %\item we used what we would like to think is a rather extensive set of benchmarks (835)
-\item extensive set of benchmarks (835)
-\begin{itemize}
-\item symbolic transition systems (556)
-\begin{itemize}
-\item BIP models, discretized real-time/hybrid systems
-\end{itemize}
-\item imperative programs (86)
-\begin{itemize}
-\item Ultimate-LTL suite, hand-crafted
-\item knowledge of CFG
-\end{itemize}
-\item termination (193)
-\begin{itemize}
-\item T2 suite
-\end{itemize}
-\end{itemize}
-\item we compared with HSF, Ultimate-LTL, T2(-CTL*)
-\end{itemize}
-\end{frame}
+%\item extensive set of benchmarks (835)
+%\begin{itemize}
+%\item symbolic transition systems (556)
+%\begin{itemize}
+%\item BIP models, discretized real-time/hybrid systems
+%\end{itemize}
+%\item imperative programs (86)
+%\begin{itemize}
+%\item Ultimate-LTL suite, hand-crafted
+%\item knowledge of CFG
+%\end{itemize}
+%\item termination (193)
+%\begin{itemize}
+%\item T2 suite
+%\end{itemize}
+%\end{itemize}
+%\item we compared with HSF, Ultimate-LTL, T2(-CTL*)
+%\end{itemize}
+%\end{frame}
 
 
 
@@ -378,8 +378,11 @@ The state-of-the-art implementations
 \def\trd{}
 \def\for{}
 \def\fif{}
-\begin{frame}{Evaluation highlights}
-Solved instances out of 835 benchmarks in 20 min: \\
+\begin{frame}{Evaluation} %highlights}
+Solved instances out of 835 benchmarks in 20 min per benchmark: \\
+\begin{itemize}
+\item HSF, Ultimate-LTL, T2(-CTL*)
+\end{itemize}
 \begin{center}
 \begin{tabular}{lr}
 L2Sia-wfr    & \fst 72\% \\
@@ -390,12 +393,13 @@ HSF          & \for 12\% \\
 \end{center}
 \vskip1cm
 Breakdown: \\
+\small
 \begin{center}
-\begin{tabular}{rrrrrr}
-            & L2Sia-wfr & Ultimate-LTL & T2-CTL*   & HSF       & T2        \\
-symbolic    & \fst 67\% & \snd 10\%    & \for  0\% & \trd  4\% &           \\
-imperative  & \fst 88\% & \snd 71\%    & \trd 42\% & \for 28\% &           \\
-termination & \snd 78\% & \trd 76\%    & \for 41\% & \fif 27\% & \fst 99\% \\
+\begin{tabular}{lrrrrr}
+                 & L2Sia-wfr & Ultimate-LTL & T2-CTL*   & HSF       & T2        \\
+sym. ts    (556) & \fst 67\% & \snd 10\%    & \for  0\% & \trd  4\% &           \\
+imp. progs (86)  & \fst 88\% & \snd 71\%    & \trd 42\% & \for 28\% &           \\
+term.      (193) & \snd 78\% & \trd 76\%    & \for 41\% & \fif 27\% & \fst 99\% \\
 \end{tabular}
 \end{center}
 \end{frame}
