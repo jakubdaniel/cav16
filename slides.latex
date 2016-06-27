@@ -3,6 +3,8 @@
 \usepackage{tikz}
 \usepackage{amsmath}
 
+\usenavigationsymbolstemplate{}
+
 \def\mark#1{$^\text{#1}$}
 \def\marktext#1#2{\mark{#1}#2}
 
