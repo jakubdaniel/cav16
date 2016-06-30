@@ -3,12 +3,28 @@
 \usepackage{tikz}
 \usepackage{amsmath}
 \usepackage{appendixnumberbeamer}
+\usepackage{graphicx}
+\usepackage{xspace}
 
 \usenavigationsymbolstemplate{}
 \setbeamertemplate{footline}[frame number]
 
 \def\mark#1{$^\text{#1}$}
 \def\marktext#1#2{\mark{#1}#2}
+
+\newcommand{\coltitle}[1]{\textbf{#1}}
+
+\newcommand{\ltos}{\textsc{L2S}\xspace}
+\newcommand{\ltosiawfr}{\ensuremath{\text{\textsc{L2Sia-wfr}}}\xspace}
+\newcommand{\ltosia}{\ensuremath{\text{\textsc{L2Sia}}}\xspace}
+\newcommand{\absltos}{{\ensuremath{\alpha}\ltos}\xspace}
+
+\newcommand{\nuxmvltl}{\ltosiawfr}
+\newcommand{\nuxmvltos}{\ltosia}
+\newcommand{\hsf}{\textsc{HSF}\xspace}
+\newcommand{\ultimateltl}{\textsc{Ultimate-LTL}\xspace}
+\newcommand{\ttwoctlstar}{\textsc{T2-CTL*}\xspace}
+\newcommand{\ttwotermination}{\textsc{T2-termination}\xspace}
 
 \begin{document}
 
@@ -116,6 +132,29 @@ Sergio Mover\mark{3}
 \end{itemize}
 \end{frame}
 
+\begin{frame}
+\begin{center}
+\begin{tikzpicture}[->, >=stealth, every node/.style={circle, draw, minimum size=2cm}]
+\node[label={above:$\begin{array}{c}\text{guess}\\\text{non-det}\\\text{loop}\end{array}$}]
+    (P-1) at (2, 0) {$\overline{P} \gets *$};
+\node[label={above:loop}]
+    (P-2) at (5, 0) {$P(X) \leftrightarrow \overline{P}$};
+\node (P-3) at (5 + 3 * sin 60, -4 * cos 60) {$\begin{array}{c} f \\ \overline{X} \gets X\end{array}$};
+\node (P-4) at (5 + 6 * sin 60, 0)
+    %{$f$};
+    {$\begin{array}{c} f \\ \bigvee\Phi_i(\overline{X}, X)\end{array}$};
+\node (P-5) at (5 + 3 * sin 60,  4 * cos 60)
+    %{$f$};
+    {$\begin{array}{c} f \\ \bigwedge\neg\Phi_i(\overline{X}, X)\end{array}$};
+\draw (P-1) -- (P-2) [dashed];
+\draw (P-2) to[bend right=40] (P-3) [dashed];
+\draw (P-3) to[bend right=40] (P-4) [dashed];
+\draw (P-4) to[bend right=40] (P-5) [dashed];
+\draw (P-5) to[bend right=40] (P-2) [dashed];
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
 \begin{frame}{Abstract counterexamples}
 \begin{center}
 \vskip-1.5cm
@@ -176,7 +215,7 @@ for increasing values of $k$
 \def\for{}
 \def\fif{}
 \begin{frame}{Evaluation} %highlights}
-{}{\small\url{https://es-static.fbk.eu/people/griggio/ic3ia/index.html}} \\
+{}{\small\url{https://es-static.fbk.eu/people/griggio/ic3ia}} \\ % index.html}} \\
 \vskip1em
 Solved instances out of 835 benchmarks in 20 min per benchmark: \\
 \begin{itemize}
@@ -211,6 +250,24 @@ term.      (193) & \snd 78\% & \trd 76\%    & \for 41\% & \fif 27\% & \fst 99\% 
 \begin{frame}
 % blank slide
 \end{frame}
+
+\newcommand{\resultsplot}[2]{%
+\begin{frame}{#2}
+  \begin{minipage}{1.0\linewidth}
+  \centering
+  \begin{tabular}{c}
+    \scalebox{0.6}{\input{plot-#1-accumulated}}
+    \\[1em]
+    \scalebox{0.6}{\input{results-table-#1}}
+  \end{tabular}
+  \end{minipage}%
+\end{frame}
+}
+
+\resultsplot{trans}{Transition Systems (556)}
+\resultsplot{other}{Imperative Programs (86)}
+\resultsplot{termination}{Termination (193)}
+\resultsplot{all}{All (835)}
 
 \begin{frame}
 k-liveness gives ranking function,
