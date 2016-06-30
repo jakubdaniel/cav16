@@ -26,17 +26,29 @@
 \newcommand{\ttwoctlstar}{\textsc{T2-CTL*}\xspace}
 \newcommand{\ttwotermination}{\textsc{T2-termination}\xspace}
 
+\title{Infinite-state liveness-to-safety via implicit~abstraction and well-founded~relations}
+
+\author{%
+Jakub~Daniel\mark{1}\mark{2},
+Alessandro~Cimatti\mark{1},
+Alberto~Griggio\mark{1},
+Stefano~Tonetta\mark{1},
+Sergio~Mover\mark{3}
+\\
+\vskip1cm
+\marktext{1}{FBK} \hfill
+\marktext{2}{Charles University} \hfill
+\marktext{3}{University of Colorado Boulder}
+}
+\date{}
+
 \begin{document}
 
-\begin{frame}{Infinite-state liveness-to-safety via implicit abstraction and well-founded relations}
-Jakub Daniel\mark{1}\mark{2},
-Alessandro Cimatti\mark{1},
-Alberto Griggio\mark{1},
-Stefano Tonetta\mark{1},
-Sergio Mover\mark{3}
-\vfill
-\marktext{1}{FBK} \marktext{2}{CUNI} \marktext{3}{CU BOULDER}
+{\setbeamertemplate{footline}{}
+\begin{frame}[noframenumbering]
+\titlepage
 \end{frame}
+}
 
 \begin{frame}{Introduction}
 \begin{itemize}
@@ -78,16 +90,19 @@ Sergio Mover\mark{3}
 \begin{frame}{Limitations}
 \begin{itemize}
 \item infinite state case: L2S not sound, k-liveness incomplete
-\item deriving ranking functions
-\begin{itemize}
-\item costly in general % (in comparison with different smt queries)
+\item deriving ranking functions costly in general % (in comparison with different smt queries)
 \item how-to for symbol transition systems
-\item technical limitations (depending on domain)
+\item technical limitations (disjunctions, \ldots) % (depending on domain)
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Contribution}
 \begin{itemize}
-\item disjunctions
-\item \ldots
-\end{itemize}
-\end{itemize}
+\item lift L2S to infinite-state soundly and efficiently
+\item unify state-of-the-art (in)finite-state techniques
+\item pack L2S and k-liveness together
+\item derive ranking functions for transition systems lazily % derive ranking only if everything else failed
+\item efficient implementation (incremental SMT, IC3)
 \end{itemize}
 \end{frame}
 
@@ -100,18 +115,6 @@ Sergio Mover\mark{3}
 \item $\overline{P}$ are unconstraint, represent an abstract state
 \item safety property: $f$ visited in a loop starting in $\overline{P}$
 \item CEGAR: concretize using BMC + refute finite unrolling
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Implicit Abstraction and IC3}
-\begin{itemize}
-\item enabled by SMT
-\item no explicit abstract system
-\item valuating predicates within concrete system avoids explosion
-\item refinement is incremental % (no need to recreate the abstract system)
-\item L2S is parametrised by a safety prover
-\item IC3 efficient SAT-based prover for finite-state
-\item lifting to infinite-state via SMT
 \end{itemize}
 \end{frame}
 
@@ -130,29 +133,6 @@ Sergio Mover\mark{3}
 \item mostly cex infeasible due to prefix
 \end{itemize}
 \end{itemize}
-\end{frame}
-
-\begin{frame}
-\begin{center}
-\begin{tikzpicture}[->, >=stealth, every node/.style={circle, draw, minimum size=2cm}]
-\node[label={above:$\begin{array}{c}\text{guess}\\\text{non-det}\\\text{loop}\end{array}$}]
-    (P-1) at (2, 0) {$\overline{P} \gets *$};
-\node[label={above:loop}]
-    (P-2) at (5, 0) {$P(X) \leftrightarrow \overline{P}$};
-\node (P-3) at (5 + 3 * sin 60, -4 * cos 60) {$\begin{array}{c} f \\ \overline{X} \gets X\end{array}$};
-\node (P-4) at (5 + 6 * sin 60, 0)
-    %{$f$};
-    {$\begin{array}{c} f \\ \bigvee\Phi_i(\overline{X}, X)\end{array}$};
-\node (P-5) at (5 + 3 * sin 60,  4 * cos 60)
-    %{$f$};
-    {$\begin{array}{c} f \\ \bigwedge\neg\Phi_i(\overline{X}, X)\end{array}$};
-\draw (P-1) -- (P-2) [dashed];
-\draw (P-2) to[bend right=40] (P-3) [dashed];
-\draw (P-3) to[bend right=40] (P-4) [dashed];
-\draw (P-4) to[bend right=40] (P-5) [dashed];
-\draw (P-5) to[bend right=40] (P-2) [dashed];
-\end{tikzpicture}
-\end{center}
 \end{frame}
 
 \begin{frame}{Abstract counterexamples}
@@ -208,6 +188,18 @@ for increasing values of $k$
 \end{itemize}
 \end{frame}
 
+\begin{frame}{Implicit Abstraction and IC3}
+\begin{itemize}
+\item enabled by SMT
+\item no explicit abstract system
+\item valuating predicates within concrete system avoids explosion
+\item refinement is incremental % (no need to recreate the abstract system)
+\item L2S is parametrised by a safety prover
+\item IC3 efficient SAT-based prover for finite-state
+\item lifting to infinite-state via SMT
+\end{itemize}
+\end{frame}
+
 % execution times, justify timeout, origin of benchmarks
 \def\fst{\cellcolor{orange}}
 \def\snd{}
@@ -249,6 +241,33 @@ term.      (193) & \snd 78\% & \trd 76\%    & \for 41\% & \fif 27\% & \fst 99\% 
 
 \begin{frame}
 % blank slide
+\end{frame}
+
+\begin{frame}
+\begin{center}
+\vskip-0.5cm
+\begin{tikzpicture}[->, >=stealth, every node/.style={circle, draw, minimum size=2cm}]
+\clip (1,-5) rectangle (18, 4);
+\node[label={above:$\begin{array}{c}\text{guess}\\\text{non-det}\\\text{loop}\end{array}$}]
+    (P-1) at (2, 0) {$\overline{P} \gets *$};
+\node[label={above:loop}]
+    (P-2) at (5, 0) {$P(X) \leftrightarrow \overline{P}$};
+\node[label={below:$\begin{array}{c}\text{non-det}\\\text{remember}\end{array}$}]
+    (P-3) at (5 + 3 * sin 60, -4 * cos 60) {$\begin{array}{c} f \\ \overline{X} \gets X\end{array}$};
+\node<1> (P-4) at (5 + 6 * sin 60, 0)
+    %{$f$};
+    {$\begin{array}{c} f \\ \color{blue}\bigvee\Phi_i(\overline{X}, X)\end{array}$};
+\node<2> (P-4) at (5 + 3 * sin 60,  4 * cos 60)
+    %{$f$};
+    {$\begin{array}{c} f \\ \color{red}\bigwedge\neg\Phi_i(\overline{X}, X)\end{array}$};
+\draw (P-1) -- (P-2) [dashed];
+\draw (P-2) to[bend right=40] (P-3) [dashed];
+\draw<1> (P-3) to[bend right=40] (P-4) [dashed];
+\draw<2> (P-3) to[bend right=90] (P-4) [dashed];
+\draw<1> (P-4) to[bend right=90] (P-2) [dashed];
+\draw<2> (P-4) to[bend right=40] (P-2) [dashed];
+\end{tikzpicture}
+\end{center}
 \end{frame}
 
 \newcommand{\resultsplot}[2]{%
