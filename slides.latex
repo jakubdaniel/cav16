@@ -6,8 +6,13 @@
 \usepackage{graphicx}
 \usepackage{xspace}
 
+\definecolor{bgcolor}{HTML}{B0CB0A}
+
 \usenavigationsymbolstemplate{}
 \setbeamertemplate{footline}[frame number]
+\setbeamercolor{frametitle}{fg=black,bg=bgcolor}
+\setbeamercolor{title}{fg=black,bg=bgcolor}
+\setbeamercolor{item}{fg=gray}
 
 \def\mark#1{$^\text{#1}$}
 \def\marktext#1#2{\mark{#1}#2}
