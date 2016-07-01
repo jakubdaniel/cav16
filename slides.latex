@@ -142,7 +142,7 @@ Sergio~Mover\mark{3}
 
 \begin{frame}{Abstract counterexamples}
 \begin{center}
-\vskip-1.5cm
+\vskip-1cm
 \hskip2cm
 \begin{tikzpicture}[->, >=stealth, every node/.style={circle, draw, minimum size=0.75cm}]
 \node (P-1) at (2, 0) {};
@@ -293,27 +293,36 @@ term.      (193) & \snd 78\% & \trd 76\%    & \for 41\% & \fif 27\% & \fst 99\% 
 \resultsplot{termination}{Termination (193)}
 \resultsplot{all}{All (835)}
 
-\begin{frame}
-k-liveness gives ranking function,
-does l2sia give a ranking function?
+%\begin{frame}
+%k-liveness gives ranking function,
+%does l2sia give a ranking function?
+%
+%an interesting idea to investigate
+%\end{frame}
 
-an interesting idea to investigate
-\end{frame}
+%\begin{frame}
+%relation to k-zeno? we do not consider time
+%\end{frame}
 
-\begin{frame}
-relation to k-zeno? we do not consider time
-\end{frame}
+%\begin{frame}
+%why termination itself is not enough? l2s for extracting wfr in ts, l2s cheap and often sufficient, \ldots
+%\end{frame}
 
-\begin{frame}
-why termination itself is not enough? l2s for extracting wfr in ts, l2s cheap and often sufficient, \ldots
-\end{frame}
+%\begin{frame}
+%what is new? use of l2s to extract wfr
+%\end{frame}
 
-\begin{frame}
-what is new? use of l2s to extract wfr
-\end{frame}
-
-\begin{frame}
-is it fair to give ts to other tools that expect cfg?
-\end{frame}
+%\begin{frame}
+%is it fair to give ts to other tools that expect cfg?
+%
+%That's why in presenting the experimental results we differentiate between
+%transition systems and imperative programs: we claim that our approach is as
+%good as the others on imperative programs (often way better than some of the
+%others, but there are also cases in which other do better), but that *it is
+%more general*, because it works well even when no CFG is available. The point
+%we want to make is not that "we are soo much cooler than the others", but that
+%our approach allows to handle also cases for which the other tools work very
+%poorly.
+%\end{frame}
 
 \end{document}
