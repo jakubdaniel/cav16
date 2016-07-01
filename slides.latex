@@ -113,7 +113,7 @@ Sergio~Mover\mark{3}
 \begin{itemize}
 \item infinite state case: L2S not sound, k-liveness incomplete
 \item deriving ranking functions costly in general % (in comparison with different smt queries)
-\item how-to for symbol transition systems
+\item how-to for symbol transition systems % no established principled way to derive rf
 \item technical limitations (disjunctions, \ldots) % (depending on domain)
 \end{itemize}
 \end{frame}
