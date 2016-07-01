@@ -229,8 +229,8 @@ for increasing values of $k$
 \def\for{}
 \def\fif{}
 \begin{frame}{Evaluation} %highlights}
-{}{\small\url{https://es-static.fbk.eu/people/griggio/ic3ia}} \\ % index.html}} \\
-\vskip1em
+%{}{\small\url{https://es-static.fbk.eu/people/griggio/ic3ia}} \\ % index.html}} \\
+%\vskip1em
 Solved instances out of 835 benchmarks in 20 min per benchmark: \\
 \begin{itemize}
 \item HSF, Ultimate-LTL, T2(-CTL*)
@@ -260,6 +260,20 @@ term.      (193) & \snd 78\% & \trd 76\%    & \for 41\% & \fif 27\% & \fst 99\% 
 
 \appendix
 \setbeamertemplate{footline}
+
+\begin{frame}
+\begin{center}
+\vskip1cm
+\vskip4.5em
+{\Huge\bf Thank You! Questions?} \\
+\vskip1cm
+also see \\
+\vskip0.75em
+\url{https://es-static.fbk.eu/people/griggio/ic3ia}
+\vskip0.75em
+for more details
+\end{center}
+\end{frame}
 
 \begin{frame}
 % blank slide
