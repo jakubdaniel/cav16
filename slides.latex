@@ -49,7 +49,25 @@ Sergio~Mover\mark{3}
 
 \begin{document}
 
-{\setbeamertemplate{footline}{}
+{
+\setbeamertemplate{footline}{}
+\usebackgroundtemplate{%
+    \vbox to \paperheight{
+    \vfill
+    \hbox to \paperwidth{
+    \hskip0.5cm
+    %\includegraphics[height=2cm,keepaspectratio]{esunit.png}
+    %\hskip0.5cm
+    \includegraphics[height=2cm,keepaspectratio]{fbk.png}
+    \hfill
+    \includegraphics[height=2cm,keepaspectratio]{cuni.png}
+    \hfill
+    \includegraphics[height=2cm,keepaspectratio]{boulder.png}
+    \hskip0.5cm
+    }
+    \vskip0.5cm
+    }
+}
 \begin{frame}[noframenumbering]
 \titlepage
 \end{frame}
@@ -61,7 +79,6 @@ Sergio~Mover\mark{3}
 \item liveness-to-safety (L2S)
 \item k-liveness
 \item well-founded transition invariants for infinite-state
-\item close the gap between these two approaches
 \end{itemize}
 \end{frame}
 
@@ -103,8 +120,8 @@ Sergio~Mover\mark{3}
 
 \begin{frame}{Contribution}
 \begin{itemize}
+\item close the gap between (in)finite-state approaches
 \item lift L2S to infinite-state soundly and efficiently
-\item unify state-of-the-art (in)finite-state techniques
 \item pack L2S and k-liveness together
 \item derive ranking functions for transition systems lazily % derive ranking only if everything else failed
 \item efficient implementation (incremental SMT, IC3)
