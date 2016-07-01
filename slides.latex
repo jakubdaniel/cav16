@@ -73,7 +73,7 @@ Sergio~Mover\mark{3}
 \end{frame}
 }
 
-\begin{frame}{Introduction}
+\begin{frame}{Background}
 \begin{itemize}
 \item currently efficient SAT-based techniques for finite-state
 \item liveness-to-safety (L2S)
@@ -103,18 +103,18 @@ Sergio~Mover\mark{3}
 \item adds $counter$, increment when $f$, check $counter < k$
 \item increment $k$ unless cex loops
 \end{itemize}
-\item both reduce to safety
-\item cex does not have to loop in infinite-state
-\item infinite-state via ranking functions
+\item both reduce to safety, SAT queries
 \end{itemize}
 \end{frame}
 
 \begin{frame}{Limitations}
 \begin{itemize}
+\item cex does not have to loop in infinite-state
 \item infinite state case: L2S not sound, k-liveness incomplete
+\item infinite-state via ranking functions
 \item deriving ranking functions costly in general % (in comparison with different smt queries)
 \item how-to for symbol transition systems % no established principled way to derive rf
-\item technical limitations (disjunctions, \ldots) % (depending on domain)
+\item technical challenges (disjunctions, \ldots) % (depending on domain)
 \end{itemize}
 \end{frame}
 
@@ -131,11 +131,13 @@ Sergio~Mover\mark{3}
 \begin{frame}{L2S for infinite state systems}
 \begin{itemize}
 \item in context of symbolic transition systems
+\item predicate abstraction
 \item L2S adds propositions $\overline{P}$ for fixed abstraction predicates $P$
-\item $\overline{P}$ are unconstraint, represent an abstract state
+\item $\overline{P}$ are unconstraint, represent guessed abstract state
 \item safety property: $f$ visited in a loop starting in $\overline{P}$
 \item incomplete due to spurious abstract cex
 \item CEGAR: concretize using BMC + refute finite unrolling
+\item refinement step may diverge
 \end{itemize}
 \end{frame}
 
