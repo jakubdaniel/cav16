@@ -55,7 +55,7 @@ Sergio~Mover\mark{3}
     \vbox to \paperheight{
     \vfill
     \hbox to \paperwidth{
-    \hskip0.5cm
+    \hskip1.5cm
     %\includegraphics[height=2cm,keepaspectratio]{esunit.png}
     %\hskip0.5cm
     \includegraphics[height=2cm,keepaspectratio]{fbk.png}
@@ -63,7 +63,7 @@ Sergio~Mover\mark{3}
     \includegraphics[height=2cm,keepaspectratio]{cuni.png}
     \hfill
     \includegraphics[height=2cm,keepaspectratio]{boulder.png}
-    \hskip0.5cm
+    \hskip1.5cm
     }
     \vskip0.5cm
     }
@@ -73,27 +73,25 @@ Sergio~Mover\mark{3}
 \end{frame}
 }
 
-\begin{frame}{Background}
-\begin{itemize}
-\item currently efficient SAT-based techniques for finite-state
-\item liveness-to-safety (L2S)
-\item k-liveness
-\item well-founded transition invariants for infinite-state
-\end{itemize}
-\end{frame}
-
 \def\F{\mathbf{F}}
 \def\G{\mathbf{G}}
 \def\bydef{\stackrel{\text{\tiny def}}{=}}
 \begin{frame}{Background}
 \begin{itemize}
 \item checking arbitrary LTL property reduced to checking $\F\G\neg f$
-\item counterexample infinite path
-\item some such cex needs to loop (lasso shape)
-\item L2S
+\item counterexample infinite path, some needs to loop (finite-state)
+\item currently efficient SAT-based techniques for finite-state
+%\item reduce to safety, SAT queries
+\item well-founded transition invariants for infinite-state
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Finite-state}
+\begin{itemize}
+\item liveness-to-safety (L2S)
 \begin{itemize}
 \item tries to guess start of loop
-\item adds copies of state variables
+\item adds rigid copies of state variables
 \item unconstraint, non-det choice
 \item monitors when system enters guessed state, $f$, loopback
 \end{itemize}
@@ -103,17 +101,17 @@ Sergio~Mover\mark{3}
 \item adds $counter$, increment when $f$, check $counter < k$
 \item increment $k$ unless cex loops
 \end{itemize}
-\item both reduce to safety, SAT queries
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Limitations}
+\begin{frame}{Infinite-state \& Limitations}
 \begin{itemize}
 \item cex does not have to loop in infinite-state
 \item infinite state case: L2S not sound, k-liveness incomplete
-\item infinite-state via ranking functions
+\item infinite-state via well-founded relations (ranking functions)
 \item deriving ranking functions costly in general % (in comparison with different smt queries)
-\item how-to for symbol transition systems % no established principled way to derive rf
+\item usually use structure such as CFG
+\item how-to for symbolic transition systems % no established principled way to derive rf
 \item technical challenges (disjunctions, \ldots) % (depending on domain)
 \end{itemize}
 \end{frame}
@@ -131,8 +129,8 @@ Sergio~Mover\mark{3}
 \begin{frame}{L2S for infinite state systems}
 \begin{itemize}
 \item in context of symbolic transition systems
-\item predicate abstraction
-\item L2S adds propositions $\overline{P}$ for fixed abstraction predicates $P$
+\item search for loop in abstract state space (predicate abstraction)
+\item add propositions $\overline{P}$ for fixed abstraction predicates $P$
 \item $\overline{P}$ are unconstraint, represent guessed abstract state
 \item safety property: $f$ visited in a loop starting in $\overline{P}$
 \item incomplete due to spurious abstract cex
@@ -146,51 +144,17 @@ Sergio~Mover\mark{3}
 \item L2S to extract ranking from transition systems
 \item $\Phi$ fixed set of well-founded relations
 \item keep abstract loop detection of L2S
+\item build well-founded transition invariant from disjuncts
+%\item covering transitive closure of transition relation
 \item $\overline{X}$ copy of theory variables $X$
 \item non-det store values of $X$ in $\overline{X}$ at some $f$ within loop
 \item at subsequent $f$ check $R(\overline{X}, X)$ for some $R \in \Phi$
-\item safe: disjunctively well-founded transition invariant
+%\item safe: disjunctively well-founded transition invariant
 \item here L2S
 \begin{itemize}
 \item provides means to enumerate candidate cex % suitable for termination analysis
 \item defers extraction of well-founded relations
 \item mostly cex infeasible due to prefix
-\end{itemize}
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Abstract counterexamples}
-\begin{center}
-\vskip-1cm
-\hskip2cm
-\begin{tikzpicture}[->, >=stealth, every node/.style={circle, draw, minimum size=0.75cm}]
-\node (P-1) at (2, 0) {};
-\node (P-2) at (4, 0) {};
-\node (P-3) at (6, 0) {};
-\node (P-4) at (6 + 2 * sin 60, -2 * cos 60) {};
-\node (P-5) at (6 + 2 * sin 60,  2 * cos 60) {};
-\draw (P-1) -- (P-2);
-\draw (P-2) -- (P-3);
-\draw (P-3) to[bend right=40] node[draw=none,label={[label distance=-0.5ex]240:$x \le n$}] {} (P-4);
-\draw (P-4) to[bend right=40] node[draw=none,label={right:$ $}] {} (P-5) [dashed];
-\draw (P-5) to[bend right=40] node[draw=none,label={[label distance=-0.5ex]120:$x' = x + 1$}] {} (P-3);
-\end{tikzpicture}
-\end{center}
-\vskip-1.5cm
-\begin{itemize}
-\item concretize by BMC
-\item finite unrollings
-$$
-\begin{array}{l}
-I \land s_0 \land T \land \ldots \Big[ s_l^l \land T^l \land \ldots s_k^k \Big] \\
-I \land s_0 \land T \land \ldots \Big[ s_l^l \land T^l \land \ldots s_k^k \Big] \land \Big[ s_l^{k+1} \land T^{k+1} \land \ldots s_k^{2k} \Big] \\
-\ldots
-\end{array}
-$$
-\item termination argument
-\begin{itemize}
-\item ranking function $r(x) \bydef n - x$
-\item well-founded relation $R(x, x') \bydef 0 \le r(x') < r(x)$
 \end{itemize}
 \end{itemize}
 \end{frame}
@@ -212,18 +176,6 @@ for increasing values of $k$
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Implicit Abstraction and IC3}
-\begin{itemize}
-\item enabled by SMT
-\item no explicit abstract system
-\item valuating predicates within concrete system avoids explosion
-\item refinement is incremental % (no need to recreate the abstract system)
-\item L2S is parametrised by a safety prover
-\item IC3 efficient SAT-based prover for finite-state
-\item lifting to infinite-state via SMT
-\end{itemize}
-\end{frame}
-
 % execution times, justify timeout, origin of benchmarks
 \def\fst{\cellcolor{orange}}
 \def\snd{}
@@ -238,6 +190,7 @@ Solved instances out of 835 benchmarks in 20 min per benchmark: \\
 \item HSF, Ultimate-LTL, T2(-CTL*)
 \end{itemize}
 \begin{center}
+\raisebox{-2cm}{\scalebox{0.4}{\input{plot-all-accumulated}}}
 \begin{tabular}{lr}
 L2Sia-wfr    & \fst 72\% \\
 Ultimate-LTL & \snd 31\% \\
@@ -245,7 +198,7 @@ T2-CTL*      & \trd 14\% \\
 HSF          & \for 12\% \\
 \end{tabular}
 \end{center}
-\vskip1cm
+%\vskip1cm
 Breakdown: \\
 \small
 \begin{center}
@@ -281,6 +234,42 @@ for more details
 % blank slide
 \end{frame}
 
+\begin{frame}{Abstract counterexamples}
+\begin{center}
+\vskip-1cm
+\hskip2cm
+\begin{tikzpicture}[->, >=stealth, every node/.style={circle, draw, minimum size=0.75cm}]
+\node (P-1) at (2, 0) {};
+\node (P-2) at (4, 0) {};
+\node (P-3) at (6, 0) {};
+\node (P-4) at (6 + 2 * sin 60, -2 * cos 60) {};
+\node (P-5) at (6 + 2 * sin 60,  2 * cos 60) {};
+\draw (P-1) -- (P-2);
+\draw (P-2) -- (P-3);
+\draw (P-3) to[bend right=40] node[draw=none,label={[label distance=-0.5ex]240:$x \le n$}] {} (P-4);
+\draw (P-4) to[bend right=40] node[draw=none,label={right:$\ldots f \ldots$}] {} (P-5) [dashed];
+\draw (P-5) to[bend right=40] node[draw=none,label={[label distance=-0.5ex]120:$x' = x + 1$}] {} (P-3);
+\end{tikzpicture}
+\end{center}
+\vskip-1.5cm
+\begin{itemize}
+\item concretize by BMC
+\item finite unrollings
+$$
+\begin{array}{l}
+I \land s_0 \land T \land \ldots \Big[ s_l^l \land T^l \land \ldots s_k^k \Big] \\
+I \land s_0 \land T \land \ldots \Big[ s_l^l \land T^l \land \ldots s_k^k \Big] \land \Big[ s_l^{k+1} \land T^{k+1} \land \ldots s_k^{2k} \Big] \\
+\ldots
+\end{array}
+$$
+\item termination argument
+\begin{itemize}
+\item ranking function $r(x) \bydef n - x$
+\item well-founded relation $R(x, x') \bydef 0 \le r(x') < r(x)$
+\end{itemize}
+\end{itemize}
+\end{frame}
+
 \begin{frame}
 \begin{center}
 \vskip-0.5cm
@@ -306,6 +295,16 @@ for more details
 \draw<2> (P-4) to[bend right=40] (P-2) [dashed];
 \end{tikzpicture}
 \end{center}
+\end{frame}
+
+\begin{frame}{Implicit Abstraction and IC3}
+\begin{itemize}
+\item enabled by SMT
+\item no explicit abstract system
+\item valuating predicates within concrete system avoids explosion
+\item refinement is incremental % (no need to recreate the abstract system)
+\item lifted SMT-based IC3 as safety prover
+\end{itemize}
 \end{frame}
 
 \newcommand{\resultsplot}[2]{%
